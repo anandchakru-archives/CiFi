@@ -1,0 +1,13 @@
+cifi:
+    port: 8078
+    agent: /Users/anand/ews/CiFi/cifi-core/target/cifi-core-1.0.jar
+    randomShutdownKey: true
+    maxRetryCount: 3
+    jenkins: http://192.168.1.7:8080
+    profiles: test, local, default
+logging:
+  level:
+    org.springframework.web: INFO
+    com.rathnasa.cifisample: DEBUG
+    org.hibernate: ERROR
+  file: cifiSample.log

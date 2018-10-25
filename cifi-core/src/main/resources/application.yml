@@ -1,0 +1,9 @@
+logging:
+  level:
+    org.springframework.web: INFO
+    com.rathnasa.cificore: DEBUG
+    org.hibernate: ERROR
+  file: cifi.log
+spring: 
+  main: 
+    banner-mode: "off"
