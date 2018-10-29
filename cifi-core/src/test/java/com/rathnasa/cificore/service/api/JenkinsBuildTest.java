@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 import com.rathnasa.cificore.config.CifiCoreConfig;
 import com.rathnasa.cificore.config.CifiPropConfig;
@@ -22,7 +21,8 @@ public class JenkinsBuildTest {
 
 	@BeforeClass
 	public static void setupTest() {
-		System.setProperty(AbstractEnvironment.DEFAULT_PROFILES_PROPERTY_NAME, "prod");
+		//uncomment this to test com.rathnasa.cificore.service.api.JenkinsBuildProd
+		//System.setProperty(AbstractEnvironment.DEFAULT_PROFILES_PROPERTY_NAME, "prod");
 		System.setProperty("cifi.core.jenkins.url", "http://192.168.1.7:8080");
 		System.setProperty("cifi.core.jenkins.name", "jrvite");
 		System.setProperty("cifi.core.jenkins.user", "builder");

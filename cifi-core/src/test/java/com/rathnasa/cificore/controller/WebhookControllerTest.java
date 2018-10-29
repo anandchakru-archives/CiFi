@@ -29,7 +29,7 @@ import com.rathnasa.cificore.model.github.WebhookCommit;
 import com.rathnasa.cificore.model.github.WebhookPushPayLoad;
 import com.rathnasa.cificore.service.repo.AppRestRepo;
 import com.rathnasa.cificore.service.repo.HistoryRestRepo;
-import com.rathnasa.cificore.service.sign.GithubSignatureVerifier;
+import com.rathnasa.cificore.service.sign.SignatureVerifier;
 import com.rathnasa.cifimodel.jenkins.JenkinsJobPayload;
 
 @WebMvcTest
@@ -43,7 +43,7 @@ public class WebhookControllerTest {
 	@MockBean
 	private HistoryRestRepo historyRepo;
 	@Autowired
-	private GithubSignatureVerifier signatureVerifierService;
+	private SignatureVerifier signatureVerifierService;
 	private final String APPNAME = "junitapp1";
 	private final String GHURL = "/webhook/github/" + APPNAME;
 	private final String JENKINSURL = "/webhook/jenkins/" + APPNAME;

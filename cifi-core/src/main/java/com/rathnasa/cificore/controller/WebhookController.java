@@ -19,7 +19,7 @@ import com.rathnasa.cificore.model.github.WebhookPushPayLoad;
 import com.rathnasa.cificore.service.api.JenkinsBuild;
 import com.rathnasa.cificore.service.repo.AppRestRepo;
 import com.rathnasa.cificore.service.repo.HistoryRestRepo;
-import com.rathnasa.cificore.service.sign.GithubSignatureVerifier;
+import com.rathnasa.cificore.service.sign.SignatureVerifier;
 import com.rathnasa.cifimodel.enums.BuildStatusType;
 import com.rathnasa.cifimodel.jenkins.JenkinsJobPayload;
 
@@ -27,7 +27,7 @@ import com.rathnasa.cifimodel.jenkins.JenkinsJobPayload;
 public class WebhookController {
 	private static final Logger logger = LoggerFactory.getLogger("com.rathnasa.cificore.controller.WebhookController");
 	@Autowired
-	private GithubSignatureVerifier signatureVerifierService;
+	private SignatureVerifier signatureVerifierService;
 	@Autowired
 	private JenkinsBuild jenkinsBuildr;
 	private Gson gson = new Gson();
