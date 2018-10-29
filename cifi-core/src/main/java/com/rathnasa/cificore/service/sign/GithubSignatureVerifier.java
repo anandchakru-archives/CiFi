@@ -20,10 +20,12 @@ public class GithubSignatureVerifier {
 		if (token == null || token.length() == 0 || signature == null || source == null || source.length() == 0) {
 			return false;
 		}
-		//String encodedKey = "sha1=" + HmacUtils.hmacSha1Hex(token, source);
-		String encodedKey = "sha1=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_1, token).hmacHex(source);
+		String encodedKey = sign(source, token);
 		logger.debug(
 				"Verifying Github:" + source + ",signature:" + signature + ", token:" + token + ",sha1:" + encodedKey);
 		return encodedKey.equals(signature);
+	}
+	public String sign(String source, String token) {
+		return "sha1=" + new HmacUtils(HmacAlgorithms.HMAC_SHA_1, token).hmacHex(source);
 	}
 }

@@ -7,9 +7,8 @@ public class CifiSettings {
 	private String bootargs;
 	private Boolean randomShutdownKey;
 	private Integer maxRetryCount;
-	private String jenkins;
 	private String profiles;
-	private CifiCore core;
+	private CifiCore core = new CifiCore();
 
 	public String getAgent() {
 		return agent;
@@ -34,12 +33,6 @@ public class CifiSettings {
 	}
 	public void setBootargs(String bootargs) {
 		this.bootargs = bootargs;
-	}
-	public String getJenkins() {
-		return jenkins;
-	}
-	public void setJenkins(String jenkins) {
-		this.jenkins = jenkins;
 	}
 	public Boolean getRandomShutdownKey() {
 		return randomShutdownKey;

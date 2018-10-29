@@ -6,6 +6,13 @@ import java.io.Serializable;
 public class LiveUpdateShutdownKeyReq implements Serializable {
 	private String newKey;
 
+	public LiveUpdateShutdownKeyReq() {
+		super();
+	}
+	public LiveUpdateShutdownKeyReq(String newKey) {
+		super();
+		this.newKey = newKey;
+	}
 	public String getNewKey() {
 		return newKey == null ? "nokey" : newKey;
 	}

@@ -2,6 +2,8 @@ package com.rathnasa.cificore.controller;
 
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,18 +25,19 @@ import com.rathnasa.cifimodel.jenkins.JenkinsJobPayload;
 
 @RestController
 public class WebhookController {
+	private static final Logger logger = LoggerFactory.getLogger("com.rathnasa.cificore.controller.WebhookController");
 	@Autowired
 	private GithubSignatureVerifier signatureVerifierService;
 	@Autowired
-	private JenkinsBuild triggerService;
+	private JenkinsBuild jenkinsBuildr;
 	private Gson gson = new Gson();
 	@Autowired
 	private AppRestRepo appRepo;
 	@Autowired
 	private HistoryRestRepo historyRepo;
 
-	@RequestMapping(value = "/webhook/github/jrvite", method = RequestMethod.POST)
-	public String acceptGithub(HttpServletRequest request, @RequestBody String payload) {
+	@RequestMapping(value = "/webhook/github/{appId}", method = RequestMethod.POST)
+	public String acceptGithub(HttpServletRequest request, @RequestBody String payload, @PathVariable String appId) {
 		/*String delivery = request.getHeader(Constants.DELIVERY);
 		String event = request.getHeader(Constants.EVENT);*/
 		String signature = request.getHeader(Constants.SIGNATURE);
@@ -42,37 +45,40 @@ public class WebhookController {
 		try {
 			payloadObj = gson.fromJson(payload, WebhookPushPayLoad.class);
 		} catch (JsonSyntaxException e) {
-			return "fail@JsonSyntaxException";
+			return Constants.FAIL_JSON;
 		}
-		if (payloadObj != null) {
-			if (payloadObj.getRef() == null) {
-				return "fail@noRef";
-			}
-			App foundApp = null;
-			if (payloadObj.getRef().indexOf("refs/heads/master") == 0) { // refs/heads/master | refs/tags/v1
-				Iterable<App> apps = appRepo.findAll();
+		if (payloadObj.getRef() == null) {
+			return Constants.FAIL_NOREF;
+		}
+		App foundApp = null;
+		// When there is a push to master branch, payloadObj.getRef() = refs/heads/master
+		// When a tag was created, payloadObj.getRef() = refs/tags/v1
+		if (payloadObj.getRef().indexOf("refs/heads/master") == 0) { // build only for push in master branch
+			Iterable<App> apps = appRepo.findAll();
+			if (apps != null) {
 				for (App app : apps) {
-					if (app.getRepoId() == payloadObj.getRepository().getId()
-							&& signatureVerifierService.verify(payload, signature, app.getGhToken())) {
-						foundApp = app;
-						break;
+					if (app.getRepoId() == payloadObj.getRepository().getId()) {
+						if (signatureVerifierService.verify(payload, signature, app.getGhToken())) {
+							foundApp = app;
+							break;
+						} else {
+							return Constants.FAIL_SIGNATURE;
+						}
 					}
 				}
-				if (foundApp != null) {
-					History history = new History();
-					history.setApp(foundApp);
-					history.setStatus(BuildStatusType.BUILDING);
-					history.setCommitId(payloadObj.getHead_commit().getId());
-					historyRepo.save(history);
-					return triggerService.build(payloadObj.getHead_commit().getId());
-				} else {
-					return "fail@incorrectRepo";
-				}
+			}
+			if (foundApp != null) {
+				History history = new History();
+				history.setApp(foundApp);
+				history.setStatus(BuildStatusType.BUILDING);
+				history.setCommitId(payloadObj.getHead_commit().getId());
+				historyRepo.save(history);
+				return jenkinsBuildr.build(payloadObj.getHead_commit().getId());
 			} else {
-				return "success@nobuild";
+				return Constants.FAIL_INCORRECTREPO;
 			}
 		} else {
-			return "fail@signature";
+			return Constants.SUCCESS_NOBUILD;
 		}
 	}
 	@RequestMapping(value = "/webhook/jenkins/{appId}", method = RequestMethod.POST)
@@ -82,34 +88,34 @@ public class WebhookController {
 		String signature = request.getHeader(Constants.SIGNATURE);
 		JenkinsJobPayload payloadObj;
 		try {
-			System.out.println("appid:" + appId + ", wh: jenkins," + "payload:" + payload + ",signature:" + signature);
+			logger.debug("appid:" + appId + ", wh: jenkins," + "payload:" + payload + ",signature:" + signature);
 			payloadObj = gson.fromJson(payload, JenkinsJobPayload.class);
 		} catch (JsonSyntaxException e) {
-			return "fail@JsonSyntaxException";
+			return Constants.FAIL_JSON;
 		}
-		if (payloadObj != null) {
-			List<App> findByAppName = appRepo.findByAppName(appId);
-			if (findByAppName != null && !findByAppName.isEmpty()) {
-				App app = findByAppName.get(0);
-				boolean verify = signatureVerifierService.verify(payload, signature, app.getJenToken());
-				if (verify) {
-					History history = historyRepo.findByCommitIdAndApp_AppId(payloadObj.getCommitId(), app.getAppId());
-					if (history != null) {
-						historyRepo.setFixedLatest(false);
-						historyRepo.setFixedAssetStatusTagVersionLatestFor(history.getHistoryId(),
-								payloadObj.getAssetId(), payloadObj.getAssetUrl(), payloadObj.getStatus(),
-								payloadObj.getTag(), payloadObj.getVersion(), true);
-					} else {
-						System.out
-								.println("Couldn't find:" + app.getAppId() + ",and commit:" + payloadObj.getCommitId());
-					}
+		List<App> findByAppName = appRepo.findByAppName(appId);
+		if (findByAppName != null && !findByAppName.isEmpty()) {
+			App app = findByAppName.get(0);
+			boolean verify = signatureVerifierService.verify(payload, signature, app.getJenToken());
+			if (verify) {
+				History history = historyRepo.findByCommitIdAndApp_AppId(payloadObj.getCommitId(), app.getAppId());
+				if (history != null) {
+					historyRepo.setFixedLatest(false);
+					historyRepo.setFixedAssetStatusTagVersionLatestFor(history.getHistoryId(), payloadObj.getAssetId(),
+							payloadObj.getAssetUrl(), payloadObj.getStatus(), payloadObj.getTag(),
+							payloadObj.getVersion(), true);
+					return Constants.SUCCESS_JENKINS;
 				} else {
-					System.out.println("Couldnt find app:" + appId);
+					logger.debug("Couldn't find:" + app.getAppId() + ",and commit:" + payloadObj.getCommitId());
+					return Constants.FAIL_NOMATCH_APP_COMMIT;
 				}
 			} else {
-				System.out.println("Signature Verify failed");
+				logger.debug("Signature Verify failed");
+				return Constants.FAIL_SIGNATURE;
 			}
+		} else {
+			logger.debug("Couldn't find app:" + appId);
+			return Constants.FAIL_NOMATCH_APP;
 		}
-		return "success@jenkins";
 	}
 }

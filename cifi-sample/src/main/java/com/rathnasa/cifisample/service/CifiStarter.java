@@ -22,8 +22,8 @@ import org.springframework.web.client.RestTemplate;
 import com.rathnasa.cifimodel.prop.CifiSettings;
 
 @Service
-public class AppRunner implements ApplicationRunner {
-	private static final Logger logger = LoggerFactory.getLogger("com.rathnasa.cifisample.service.AppRunner");
+public class CifiStarter implements ApplicationRunner {
+	private static final Logger logger = LoggerFactory.getLogger("com.rathnasa.cifisample.service.CifiStarter");
 	private static final String SDK_PATH = "shutdownkey.txt";
 	private static final Integer DEFAULT_MAX_RETRY = 2;
 	private String SHUTDOWN_URL = "http://localhost:PORT/shutdown";
@@ -31,7 +31,7 @@ public class AppRunner implements ApplicationRunner {
 	private CifiSettings cifiSettings;
 
 	public void run(ApplicationArguments args) throws Exception {
-		System.out.println("====================\n\tcifi-sample AppRunner:\n\n");
+		logger.debug("====================\n\tCifiStarter:\n\n");
 		List<String> pbArgs = new ArrayList<String>();
 		if (cifiSettings != null && cifiSettings.getAgent() != null) {
 			try {

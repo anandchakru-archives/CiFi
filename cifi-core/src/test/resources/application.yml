@@ -1,0 +1,17 @@
+logging:
+  level:
+    org.springframework.web: INFO
+    com.rathnasa.cificore: DEBUG
+    org.hibernate: ERROR
+  file: cifi.log
+spring: 
+  main: 
+    banner-mode: "off"
+  datasource:
+    url: jdbc:mysql://localhost:3306/cifi?useSSL=false&allowPublicKeyRetrieval=true
+    username: tester
+    password: tester
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create

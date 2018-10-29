@@ -10,4 +10,5 @@ logging:
     org.springframework.web: INFO
     com.rathnasa.cifisample: DEBUG
     org.hibernate: ERROR
+    root: DEBUGs
   file: cifiSample.log
