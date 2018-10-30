@@ -10,6 +10,8 @@ deploy:
       file: 
         - cifi-core/target/cifi-core-*.jar
       branch: master
+      on:
+      	tags: true
 cache:
   directories:
   - $HOME/.m2
