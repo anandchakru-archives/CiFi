@@ -2,16 +2,25 @@
 # and added to travis https://travis-ci.com/anandchakru/CiFi/settings
 
 language: java
-script: mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-deploy:
-      provider: releases
-      api_key: $GITHUB_OAUTH_TOKEN
-      skip_cleanup: true
-      file: 
-        - cifi-core/target/cifi-core-*.jar
-      branch: master
-      on:
-      	tags: true
+script:
+- mvn package -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 cache:
   directories:
-  - $HOME/.m2
+    - $HOME/.m2
+branches:
+  except:
+  - test
+  - master
+notifications:
+  email:
+    on_failure: change
+    on_success: change
+deploy:
+  provider: releases
+  api_key: $GITHUB_OAUTH_TOKEN
+  file: "/home/travis/build/anandchakru/CiFi/cifi-core/target/cifi-core-*.jar"
+  on:
+    repo: anandchakru/CiFi
+    branch: master
+    tags: true
+  skip_cleanup: true
