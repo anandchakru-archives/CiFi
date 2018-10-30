@@ -18,7 +18,8 @@ notifications:
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
-  file: "/home/travis/build/anandchakru/CiFi/cifi-core/target/cifi-core-*.jar"
+  file: 
+    - /home/travis/build/anandchakru/CiFi/cifi-core/target/cifi-core-1.0.jar
   on:
     repo: anandchakru/CiFi
     branch: master
