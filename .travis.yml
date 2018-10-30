@@ -9,6 +9,7 @@ deploy:
       skip_cleanup: true
       file: 
         - cifi-core/target/cifi-core-*.jar
+      all_branches: true
 cache:
   directories:
   - $HOME/.m2
