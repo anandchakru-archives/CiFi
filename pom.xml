@@ -2,9 +2,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.rathnasa</groupId>
+	<groupId>com.github.anandchakru</groupId>
 	<artifactId>CiFi</artifactId>
-	<version>1.0</version>
+	<version>1.3.0</version>
 	<packaging>pom</packaging>
 	<name>ci-fi</name>
 	<description>Continuous Integration Tool</description>
@@ -29,12 +29,12 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.rathnasa</groupId>
+				<groupId>com.github.anandchakru</groupId>
 				<artifactId>cifi-model</artifactId>
 				<version>1.0</version>
 			</dependency>
 			<dependency>
-				<groupId>com.rathnasa</groupId>
+				<groupId>com.github.anandchakru</groupId>
 				<artifactId>cifi-core</artifactId>
 				<version>1.0</version>
 			</dependency>

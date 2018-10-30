@@ -20,11 +20,11 @@
 	<dependencies>
 		<!-- ci-fi -->
 		<dependency>
-			<groupId>com.rathnasa</groupId>
+			<groupId>com.github.anandchakru</groupId>
 			<artifactId>cifi-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.rathnasa</groupId>
+			<groupId>com.github.anandchakru</groupId>
 			<artifactId>cifi-core</artifactId>
 		</dependency>
 		<dependency>
