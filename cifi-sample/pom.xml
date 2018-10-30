@@ -6,9 +6,9 @@
 	<description>Ci-fi Project Sample</description>
 
 	<parent>
-		<groupId>com.rathnasa</groupId>
-		<artifactId>CiFi</artifactId>
-		<version>1.0</version>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.5.RELEASE</version>
 	</parent>
 
 	<properties>
